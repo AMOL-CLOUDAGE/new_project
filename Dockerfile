@@ -1,11 +1,10 @@
-FROM CENTOS:latest
-RUN yum install -y httpd \
-zip \
-unzip
-ADD https://www.free-css.com/assets/files/free-css-templates/download/page264/pullo.zip /var/www/html/
-WORKDIR /var/www/html
-RUN unzip pullo.zip
-RUN cp -rvf pullo/* .
-RUN rm -rf pullo pullo.zip
-CMD ["usr/sbin/htttpd", "D","FOREGROUND"]
-EXPOSE 80
+FROM python:3.7-alpine
+WORKDIR /code
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+RUN apk add --no-cache gcc musl-dev linux-headers
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+EXPOSE 5000
+COPY . .
+CMD ["flask", "run"]
